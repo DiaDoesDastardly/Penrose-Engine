@@ -42,8 +42,8 @@ namespace PenroseEngine{
             };
             return outputPoint;
         }
-        public static double[][][] rotateTriangles(double[,] rotationalMatrix, int[][] triangleList, double[][] vertices,int[] triangleColor,double scale){
-            double[][] vertexHolder = new double[vertices.Length][];
+        public static double[][][] rotateTriangles(double[,] rotationalMatrix, gameObject renderableObject,double scale){
+            double[][] vertexHolder = new double[renderableObject.vertices.Length][];
             for(int index = 0; index < vertexHolder.Length; index++){
                 vertexHolder[index] = new double[3];
             }
@@ -71,7 +71,11 @@ namespace PenroseEngine{
             for(int index = 0; index< vertices.GetLength(0); index++){
                 tempPoint = rotatePoints(
                     rotationalMatrix, 
-                    new double[]{vertices[index][0],vertices[index][1],vertices[index][2]}, 
+                    new double[]{
+                        renderableObject.vertices[index][0],
+                        renderableObject.vertices[index][1],
+                        renderableObject.vertices[index][2]
+                    }, 
                     new double[]{0,0,0}
                     );
                 vertexHolder[index][0] = tempPoint[0]*scale;
@@ -83,14 +87,14 @@ namespace PenroseEngine{
             for(int index = 0; index < triangleList.Length; index++){
                 //Finding the deltaAB and deltaAC for this triangle 
                 deltaAB = new double[]{
-                    vertexHolder[triangleList[index][1]][0]-vertexHolder[triangleList[index][0]][0],
-                    vertexHolder[triangleList[index][1]][1]-vertexHolder[triangleList[index][0]][1],
-                    vertexHolder[triangleList[index][1]][2]-vertexHolder[triangleList[index][0]][2],
+                    vertexHolder[renderableObject.triangles[index][1]][0]-vertexHolder[renderableObject.triangles[index][0]][0],
+                    vertexHolder[renderableObject.triangles[index][1]][1]-vertexHolder[renderableObject.triangles[index][0]][1],
+                    vertexHolder[renderableObject.triangles[index][1]][2]-vertexHolder[renderableObject.triangles[index][0]][2],
                 };
                 deltaAC = new double[]{
-                    vertexHolder[triangleList[index][2]][0]-vertexHolder[triangleList[index][0]][0],
-                    vertexHolder[triangleList[index][2]][1]-vertexHolder[triangleList[index][0]][1],
-                    vertexHolder[triangleList[index][2]][2]-vertexHolder[triangleList[index][0]][2],
+                    vertexHolder[renderableObject.triangles[index][2]][0]-vertexHolder[renderableObject.triangles[index][0]][0],
+                    vertexHolder[renderableObject.triangles[index][2]][1]-vertexHolder[renderableObject.triangles[index][0]][1],
+                    vertexHolder[renderableObject.triangles[index][2]][2]-vertexHolder[renderableObject.triangles[index][0]][2],
                 };
                 //Doing backface culling at this step
                 if(deltaAB[0]*deltaAC[1] - deltaAC[0]*deltaAB[1] < 0){
@@ -112,9 +116,9 @@ namespace PenroseEngine{
                     for(double j = 0; j+i <= 1; j += 1/distAC){
                         //Finding the point in 3d space
                         targetPoint = new double[]{
-                            1*(vertexHolder[triangleList[index][0]][0]+xSize/2)+i*deltaAB[0]+j*deltaAC[0],
-                            1*(vertexHolder[triangleList[index][0]][1]+ySize/2)+i*deltaAB[1]+j*deltaAC[1],
-                            1*vertexHolder[triangleList[index][0]][2]+i*deltaAB[2]+j*deltaAC[2]
+                            1*(vertexHolder[renderableObject.triangles[index][0]][0]+xSize/2)+i*deltaAB[0]+j*deltaAC[0],
+                            1*(vertexHolder[renderableObject.triangles[index][0]][1]+ySize/2)+i*deltaAB[1]+j*deltaAC[1],
+                            1*vertexHolder[renderableObject.triangles[index][0]][2]+i*deltaAB[2]+j*deltaAC[2]
                         };
                         //Making sure the point is on the screen
                         if(targetPoint[0]>0 && xSize>targetPoint[0] && targetPoint[1]>0 && ySize>targetPoint[1]){

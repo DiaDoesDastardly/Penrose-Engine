@@ -1,0 +1,15 @@
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.exe
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.deps.json
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.runtimeconfig.json
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.dll
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.pdb
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.AssemblyInfoInputs.cache
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.AssemblyInfo.cs
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.csproj.CoreCompileInputs.cache
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.sourcelink.json
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.dll
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\refint\PenroseEngine.dll
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.pdb
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.genruntimeconfig.cache
+c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\ref\PenroseEngine.dll

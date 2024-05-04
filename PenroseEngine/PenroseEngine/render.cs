@@ -69,9 +69,9 @@ namespace PenroseEngine{
                 tempPoint = rotatePoints(
                     rotationalMatrix, 
                     new double[]{
-                        renderableObject.vertices[index].x,
-                        renderableObject.vertices[index].y,
-                        renderableObject.vertices[index].z
+                        renderableObject.vertices[index].x+renderableObject.position.x,
+                        renderableObject.vertices[index].y+renderableObject.position.y,
+                        renderableObject.vertices[index].z+renderableObject.position.z
                     }, 
                     new double[]{0,0,0}
                     );
@@ -109,13 +109,13 @@ namespace PenroseEngine{
                     deltaAC[2]*deltaAC[2]
                 );
                 //Going through all of the pixels in the triangle (using the i+j <= 1 rule)
-                for(double i = 0; i <= 1; i += 1/distAB){
-                    for(double j = 0; j+i <= 1; j += 1/distAC){
+                for(double i = 0; i <= 1; i += 1/(1.5*distAB)){
+                    for(double j = 0; j+i <= 1; j += 1/(1.5*distAC)){
                         //Finding the point in 3d space
                         targetPoint = new double[]{
                             1*(vertexHolder[renderableObject.triangles[index][0]][0]+xSize/2)+i*deltaAB[0]+j*deltaAC[0],
                             1*(vertexHolder[renderableObject.triangles[index][0]][1]+ySize/2)+i*deltaAB[1]+j*deltaAC[1],
-                            1*vertexHolder[renderableObject.triangles[index][0]][2]+i*deltaAB[2]+j*deltaAC[2]
+                            1*(vertexHolder[renderableObject.triangles[index][0]][2]+i*deltaAB[2]+j*deltaAC[2])
                         };
                         //Making sure the point is on the screen
                         if(targetPoint[0]>0 && xSize>targetPoint[0] && targetPoint[1]>0 && ySize>targetPoint[1]){
@@ -165,7 +165,7 @@ namespace PenroseEngine{
         public int[][] triangles;
         public int[] triangleColors;
 
-        vector3 position;
+        public vector3 position;
 
         public gameObject(){
             //Empty Case
@@ -186,6 +186,8 @@ namespace PenroseEngine{
             List<int[]> foundTriangles = new List<int[]>();
             //Creating array that will hold the contents of a line when we remove all of the spaces
             string[] splitLineContents;
+            //Array of bools that indicate if a node has 
+            List<int> nodeIndex = new List<int>();
             //Checking each line for which starting characters they have and acting accordingly 
             for(int index = 0; index<fileContents.Length-1; index++){
                 //We check the first two characters to make sure we don't misread anything
@@ -208,11 +210,19 @@ namespace PenroseEngine{
                     Char.ToString(fileContents[index][0])+
                     Char.ToString(fileContents[index][1])=="f "){
                     splitLineContents = fileContents[index].Split(" ");
-                    foundTriangles.Add(new int[]{
-                        Convert.ToInt32(splitLineContents[1].Split("/")[0])-1,
-                        Convert.ToInt32(splitLineContents[2].Split("/")[0])-1,
-                        Convert.ToInt32(splitLineContents[3].Split("/")[0])-1                        
-                    });
+                    nodeIndex.Clear();
+                    for(int ni = 1; ni<splitLineContents.Length; ni++){
+                        nodeIndex.Add(ni);
+                    }
+                    while(nodeIndex.Count > 2){
+                        foundTriangles.Add(new int[]{
+                            Convert.ToInt32(splitLineContents[nodeIndex[0]].Split("/")[0])-1,
+                            Convert.ToInt32(splitLineContents[nodeIndex[1]].Split("/")[0])-1,
+                            Convert.ToInt32(splitLineContents[nodeIndex[2]].Split("/")[0])-1                        
+                        });
+                        nodeIndex.RemoveAt(1);
+                    }
+                    
                 }
             }
             vertices = foundVertices.ToArray();
@@ -221,6 +231,7 @@ namespace PenroseEngine{
             for(int index = 0; index<triangles.Length; index++){
                 triangleColors[index] = 120;
             }
+            position = new vector3(0,0,0);
         }
     }
     public class component{
@@ -327,23 +338,13 @@ namespace PenroseEngine{
 
             // Call the edit function
             //Bitmap editedImage = EditPicture(originalImage);
+            renderObject.position.y += 0.001;
             rotationalMatrix = rendererPipeline.rotationMatrixGenerator(trackBar1.Value,trackBar2.Value);
             double[][][] screenInfo = rendererPipeline.rotateTriangles(rotationalMatrix,renderObject, scale);
             Image frame = rendererPipeline.renderToScreen(screenInfo);
 
             // Update the PictureBox with the edited image
             pictureBox1.Image = frame;
-        }
-
-        // Function to generate the bitmap
-        
-
-        // Function to edit the picture
-        private Bitmap EditPicture(Bitmap original)
-        {
-            // Example: Flip the image horizontally
-            original.RotateFlip(RotateFlipType.RotateNoneFlipX);
-            return original;
         }
     }
 }

@@ -13,3 +13,18 @@ c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\ne
 c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.pdb
 c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.genruntimeconfig.cache
 c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\ref\PenroseEngine.dll
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.exe
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.deps.json
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.runtimeconfig.json
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.dll
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\bin\Debug\net8.0-windows\PenroseEngine.pdb
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.AssemblyInfoInputs.cache
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.AssemblyInfo.cs
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.csproj.CoreCompileInputs.cache
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.sourcelink.json
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.dll
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\refint\PenroseEngine.dll
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.pdb
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\PenroseEngine.genruntimeconfig.cache
+c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\obj\Debug\net8.0-windows\ref\PenroseEngine.dll

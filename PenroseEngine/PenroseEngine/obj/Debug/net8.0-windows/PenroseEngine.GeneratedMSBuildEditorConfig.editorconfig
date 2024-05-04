@@ -14,6 +14,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PenroseEngine
-build_property.ProjectDir = c:\Users\Charley Dodgion\Penrose-Engine\PenroseEngine\PenroseEngine\
+build_property.ProjectDir = c:\Users\borgs\Documents\GitHub\Penrose-Engine\PenroseEngine\PenroseEngine\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

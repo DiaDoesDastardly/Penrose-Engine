@@ -11,6 +11,10 @@ namespace PenroseEngine{
     {
         public static int xSize = 400;
         public static int ySize = 400;
+        public static double screenResolution = 1;
+        public static double triangleDensity = 1.5;
+        public static double[][][] screenInfo = new double[(int)(screenResolution*xSize)][][];
+        public static double frameCounter = 0;
         public static double[,] rotationMatrixGenerator(double theta, double phi){
             //Converting input degrees into radians
             theta = (theta/180)*Math.PI;
@@ -49,13 +53,15 @@ namespace PenroseEngine{
             //interacted values are 
             //  0.0 == not interacted
             //  1.0 == interacted
-            double[][][] screenInfo = new double[xSize][][];
-            for(int z = 0; z < screenInfo.Length; z++){
-                screenInfo[z] = new double[ySize][];
-                for(int x = 0; x < screenInfo[z].Length; x++){
-                    screenInfo[z][x] = new double[3];
+            
+            /*
+            for(int z = 0; z < rendererPipeline.screenInfo .Length; z++){
+                rendererPipeline.screenInfo [z] = new double[rendererPipeline.ySize][];
+                for(int x = 0; x < rendererPipeline.screenInfo [z].Length; x++){
+                    rendererPipeline.screenInfo [z][x] = new double[5];
                 }
             }
+            */
             double[] tempPoint = new double[]{0.0,0.0,0.0};
             double[] deltaAB = new double[]{0.0,0.0,0.0};
             double[] deltaAC = new double[]{0.0,0.0,0.0};
@@ -109,25 +115,43 @@ namespace PenroseEngine{
                     deltaAC[2]*deltaAC[2]
                 );
                 //Going through all of the pixels in the triangle (using the i+j <= 1 rule)
-                for(double i = 0; i <= 1; i += 1/(1.5*distAB)){
-                    for(double j = 0; j+i <= 1; j += 1/(1.5*distAC)){
+                for(double i = 0; i <= 1; i += 1/(triangleDensity*distAB)){                    
+                    for(double j = 0; j+i <= 1; j += 1/(triangleDensity*distAC)){
                         //Finding the point in 3d space
                         targetPoint = new double[]{
-                            1*(vertexHolder[renderableObject.triangles[index][0]][0]+xSize/2)+i*deltaAB[0]+j*deltaAC[0],
-                            1*(vertexHolder[renderableObject.triangles[index][0]][1]+ySize/2)+i*deltaAB[1]+j*deltaAC[1],
-                            1*(vertexHolder[renderableObject.triangles[index][0]][2]+i*deltaAB[2]+j*deltaAC[2])
+                            vertexHolder[renderableObject.triangles[index][0]][0]+(xSize/2)+i*deltaAB[0]+j*deltaAC[0],
+                            vertexHolder[renderableObject.triangles[index][0]][1]+(ySize/2)+i*deltaAB[1]+j*deltaAC[1],
+                            0
                         };
                         //Making sure the point is on the screen
-                        if(targetPoint[0]>0 && xSize>targetPoint[0] && targetPoint[1]>0 && ySize>targetPoint[1]){
+                        if(
+                            targetPoint[0]>0 && 
+                            xSize>targetPoint[0] && 
+                            targetPoint[1]>0 && 
+                            ySize>targetPoint[1]
+                        ){
+                            //Calculating depth only if pixel is on screen
+                            targetPoint[2] = vertexHolder[renderableObject.triangles[index][0]][2]+i*deltaAB[2]+j*deltaAC[2];
                             //Seeing if this pixel has been interacted and if depth is lower than current value
                             if(
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][1] == 0.0f || 
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][0] < targetPoint[2]
+                                screenInfo[(int)(screenResolution*targetPoint[0])][(int)(screenResolution*targetPoint[1])][1] != frameCounter || 
+                                screenInfo[(int)(screenResolution*targetPoint[0])][(int)(screenResolution*targetPoint[1])][0] < targetPoint[2]
                             ){
                                 //Setting the pixel to interacted and the depth value to the targetPoint's 
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][2] = renderableObject.triangleColors[index];
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][1] = 1.0f;
+                                screenInfo[(int)(screenResolution*targetPoint[0])][(int)(screenResolution*targetPoint[1])] = new double[]{
+                                    targetPoint[2],
+                                    frameCounter,
+                                    (int)(120*i+120*j),
+                                    i,
+                                    j
+                                };
+                                /*
+                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][4] = j;
+                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][3] = i;
+                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][2] = (int)(120*i+120*j);
+                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][1] = frameCounter;
                                 screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][0] = targetPoint[2];
+                                */
                             }
                         }
                     }
@@ -137,21 +161,27 @@ namespace PenroseEngine{
             return screenInfo;
         } 
         public static Image renderToScreen(double[][][] screenInfo){
-            Bitmap screenImage = new Bitmap(screenInfo.Length, screenInfo[0].Length);
+            Bitmap screenImage = new Bitmap(xSize, ySize);
             //Creating the tempColor holder that will be used to color the triangles
             Color tempColor = Color.FromArgb(255,0,0,0);
-            for(int x = 0; x< screenInfo.Length; x++){
+            for(int x = 0; x< xSize; x++){
                 //screenOutput[x] = new int[screenInfo[x].Length][];
-                for(int y = 0; y< screenInfo[0].Length; y++){
+                for(int y = 0; y< ySize; y++){
                     //screenOutput[x][y] = new int[screenInfo[x][y].Length];
-                    if(screenInfo[x][y][1] == 1.0f){
+                    if(screenInfo[(int)(screenResolution*x)][(int)(screenResolution*y)][1] == frameCounter){
                         //Pulling the color from screenData
-                        tempColor = Color.FromArgb(255,(int)screenInfo[x][y][2],(int)screenInfo[x][y][2],(int)screenInfo[x][y][2]);
+                        tempColor = Color.FromArgb(
+                            255,
+                            (int)screenInfo[(int)(screenResolution*x)][(int)(screenResolution*y)][2],
+                            (int)screenInfo[(int)(screenResolution*x)][(int)(screenResolution*y)][2],
+                            (int)screenInfo[(int)(screenResolution*x)][(int)(screenResolution*y)][2]
+                        );
                         screenImage.SetPixel(x,y,tempColor);
                     }else{
+                        screenInfo[(int)(screenResolution*x)][(int)(screenResolution*y)] = new double[5];
                         //If the pixel has not been interacted with, then set color to white
-                        tempColor = Color.FromArgb(255,255,255,255);
-                        screenImage.SetPixel(x,y,tempColor);
+                        //tempColor = Color.FromArgb(255,255,255,255);
+                        //screenImage.SetPixel(x,y,tempColor);
                     }
                 }
             }
@@ -164,6 +194,7 @@ namespace PenroseEngine{
         public vector3[] vertices;
         public int[][] triangles;
         public int[] triangleColors;
+        public vector3[] faceNormals;
 
         public vector3 position;
 
@@ -184,6 +215,7 @@ namespace PenroseEngine{
             //Creating lists to hold the triangles and vertices we find
             List<vector3> foundVertices = new List<vector3>();
             List<int[]> foundTriangles = new List<int[]>();
+            List<vector3> foundNormals = new List<vector3>();
             //Creating array that will hold the contents of a line when we remove all of the spaces
             string[] splitLineContents;
             //Array of bools that indicate if a node has 
@@ -195,6 +227,16 @@ namespace PenroseEngine{
                     Char.ToString(fileContents[index][0])+
                     Char.ToString(fileContents[index][1])=="o "){
                     name = fileContents[index].Split(" ")[1];
+                }
+                if(
+                    Char.ToString(fileContents[index][0])+
+                    Char.ToString(fileContents[index][1])=="vn"){
+                    splitLineContents = fileContents[index].Split(" ");
+                    foundNormals.Add(new vector3(
+                        Convert.ToDouble(splitLineContents[1]),
+                        Convert.ToDouble(splitLineContents[2]),
+                        Convert.ToDouble(splitLineContents[3])
+                    ));
                 }
                 if(
                     Char.ToString(fileContents[index][0])+
@@ -272,6 +314,12 @@ namespace PenroseEngine{
             //InitializeComponent();
             pictureBox1 = new PictureBox();
             //pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+            for(int z = 0; z < rendererPipeline.screenInfo.Length; z++){
+                rendererPipeline.screenInfo[z] = new double[(int)(rendererPipeline.ySize*rendererPipeline.screenResolution)][];
+                for(int x = 0; x < rendererPipeline.screenInfo[z].Length; x++){
+                    rendererPipeline.screenInfo [z][x] = new double[5];
+                }
+            }
             InitializeComponent();
             InitializeTimer();
         }
@@ -338,10 +386,14 @@ namespace PenroseEngine{
 
             // Call the edit function
             //Bitmap editedImage = EditPicture(originalImage);
-            renderObject.position.y += 0.001;
+            //renderObject.position.y += 0.001;
+            rendererPipeline.frameCounter += 1;
+            if(rendererPipeline.frameCounter >= 60){
+                rendererPipeline.frameCounter = 1;
+            }
             rotationalMatrix = rendererPipeline.rotationMatrixGenerator(trackBar1.Value,trackBar2.Value);
-            double[][][] screenInfo = rendererPipeline.rotateTriangles(rotationalMatrix,renderObject, scale);
-            Image frame = rendererPipeline.renderToScreen(screenInfo);
+            rendererPipeline.rotateTriangles(rotationalMatrix,renderObject, scale);
+            Image frame = rendererPipeline.renderToScreen(rendererPipeline.screenInfo);
 
             // Update the PictureBox with the edited image
             pictureBox1.Image = frame;

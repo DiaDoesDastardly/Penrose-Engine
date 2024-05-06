@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PenroseEngine")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+551f1bc9c70a1b529d427f1e025358e3b21fd628")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d260f5c15fb447d61c96378f68f2bd357aa78b32")]
 [assembly: System.Reflection.AssemblyProductAttribute("PenroseEngine")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PenroseEngine")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -145,17 +145,11 @@ namespace PenroseEngine{
                                     i,
                                     j
                                 };
-                                /*
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][4] = j;
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][3] = i;
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][2] = (int)(120*i+120*j);
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][1] = frameCounter;
-                                screenInfo[(int)targetPoint[0]][(int)targetPoint[1]][0] = targetPoint[2];
-                                */
                             }
                         }
                     }
                 }
+                
             }
             //returning the screen data
             return screenInfo;

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Numerics;
+using System.IO.Compression;
 
 namespace PenroseEngine{
     
@@ -44,9 +46,9 @@ namespace PenroseEngine{
             return outputPoint;
         }
         public static double[][][] rotateTriangles(double[,] rotationalMatrix, gameObject renderableObject,double scale){
-            double[][] vertexHolder = new double[renderableObject.vertices.Length][];
+            vector3[] vertexHolder = new vector3[renderableObject.vertices.Length];
             for(int index = 0; index < vertexHolder.Length; index++){
-                vertexHolder[index] = new double[3];
+                vertexHolder[index] = new vector3();
             }
             //int[][] triangleHolder = triangleList;
             //Each pixel has the info of {depth, interacted, color}
@@ -80,13 +82,14 @@ namespace PenroseEngine{
                         renderableObject.vertices[index].z+renderableObject.position.z
                     }, 
                     new double[]{0,0,0}
-                    );
-                vertexHolder[index][0] = tempPoint[0]*scale;
-                vertexHolder[index][1] = tempPoint[1]*scale;
-                vertexHolder[index][2] = tempPoint[2];
+                );
+                vertexHolder[index].x = tempPoint[0]*scale;
+                vertexHolder[index].y = tempPoint[1]*scale;
+                vertexHolder[index].z = tempPoint[2];
             }
 
             //Rendering the rotated triangles into the screen data 
+            /*
             for(int index = 0; index < renderableObject.triangles.Length; index++){
                 //Finding the deltaAB and deltaAC for this triangle 
                 deltaAB = new double[]{
@@ -151,9 +154,84 @@ namespace PenroseEngine{
                 }
                 
             }
+            */
+            for(int index = 0; index < renderableObject.triangles.Length; index++){
+                //Finding the deltaAB and deltaAC for this triangle 
+                deltaAB = new double[]{
+                    vertexHolder[renderableObject.triangles[index][1]].x-vertexHolder[renderableObject.triangles[index][0]].x,
+                    vertexHolder[renderableObject.triangles[index][1]].y-vertexHolder[renderableObject.triangles[index][0]].y,
+                    vertexHolder[renderableObject.triangles[index][1]].z-vertexHolder[renderableObject.triangles[index][0]].z,
+                };
+                deltaAC = new double[]{
+                    vertexHolder[renderableObject.triangles[index][2]].x-vertexHolder[renderableObject.triangles[index][0]].x,
+                    vertexHolder[renderableObject.triangles[index][2]].y-vertexHolder[renderableObject.triangles[index][0]].y,
+                    vertexHolder[renderableObject.triangles[index][2]].z-vertexHolder[renderableObject.triangles[index][0]].z,
+                };
+                //Doing backface culling at this step
+                if(deltaAB[0]*deltaAC[1] - deltaAC[0]*deltaAB[1] < 0){
+                    continue;
+                }
+                drawLine(
+                    vertexHolder[renderableObject.triangles[index][0]],
+                    vertexHolder[renderableObject.triangles[index][1]]
+                );
+                drawLine(
+                    vertexHolder[renderableObject.triangles[index][1]],
+                    vertexHolder[renderableObject.triangles[index][2]]
+                );
+                drawLine(
+                    vertexHolder[renderableObject.triangles[index][0]],
+                    vertexHolder[renderableObject.triangles[index][2]]
+                );
+            }
             //returning the screen data
             return screenInfo;
         } 
+        public static void drawLine(vector3 pointA, vector3 pointB){
+            vector3 interactedPoint = new vector3(0,0,0);
+            double rateOfChange;
+            int inverse;
+            if(Math.Abs(pointB.x-pointA.x)>=Math.Abs(pointB.y-pointA.y)){
+                rateOfChange = (pointB.y-pointA.y)/(pointB.x-pointA.x);
+                inverse = Math.Sign(pointB.x-pointA.x);
+                for(int index = 0; index<Math.Abs(pointB.x-pointA.x); index++){
+                    interactedPoint = new vector3(
+                        inverse*Math.Floor((double)index)+Math.Floor(pointA.x)+xSize/2,
+                        inverse*Math.Floor(rateOfChange*index)+Math.Floor(pointA.y)+ySize/2,
+                        index/Math.Abs(pointB.x-pointA.x)*pointA.z+
+                        (1-index/Math.Abs(pointB.x-pointA.x))*pointB.z
+                    );
+                    screenInfo[(int)interactedPoint.x][(int)interactedPoint.y] = new double[]{
+                        interactedPoint.z,
+                        frameCounter,
+                        0,
+                        0,
+                        0
+                    };
+                }
+                
+            }else{
+                rateOfChange = (pointB.x-pointA.x)/(pointB.y-pointA.y);
+                inverse = Math.Sign(pointB.y-pointA.y);
+                for(int index = 0; index<Math.Abs(pointB.y-pointA.y); index++){
+                    interactedPoint = new vector3(
+                        inverse*Math.Floor(rateOfChange*index)+Math.Floor(pointA.x)+xSize/2,
+                        inverse*Math.Floor((double)index)+Math.Floor(pointA.y)+ySize/2,
+                        index/Math.Abs(pointB.x-pointA.x)*pointA.z+
+                        (1-index/Math.Abs(pointB.x-pointA.x))*pointB.z
+                    );
+                    screenInfo[(int)interactedPoint.x][(int)interactedPoint.y] = new double[]{
+                        interactedPoint.z,
+                        frameCounter,
+                        0,
+                        0,
+                        0
+                    };
+                }
+                
+            }
+        }
+
         public static Image renderToScreen(double[][][] screenInfo){
             Bitmap screenImage = new Bitmap(xSize, ySize);
             //Creating the tempColor holder that will be used to color the triangles
@@ -285,6 +363,30 @@ namespace PenroseEngine{
             this.y = y;
             this.z = z;
         }
+        public static vector3 add(vector3 first, vector3 second){
+            return new vector3(
+                first.x + second.x,
+                first.y + second.y,
+                first.z + second.z
+            );
+        }
+        public static vector3 subtract(vector3 first, vector3 second){
+            return new vector3(
+                first.x - second.x,
+                first.y - second.y,
+                first.z - second.z
+            );
+        }
+        public void addThis(vector3 first){
+            x += first.x;
+            y += first.y;
+            z += first.z;
+        }
+        public void subtractThis(vector3 first){
+            x -= first.x;
+            y -= first.y;
+            z -= first.z;
+        }
     }
     public partial class MyForm : Form
     {
@@ -384,6 +486,10 @@ namespace PenroseEngine{
             rendererPipeline.frameCounter += 1;
             if(rendererPipeline.frameCounter >= 60){
                 rendererPipeline.frameCounter = 1;
+            }
+            rendererPipeline.triangleDensity += 0.001;
+            if(rendererPipeline.triangleDensity >= 1.5){
+                rendererPipeline.triangleDensity = .1;
             }
             rotationalMatrix = rendererPipeline.rotationMatrixGenerator(trackBar1.Value,trackBar2.Value);
             rendererPipeline.rotateTriangles(rotationalMatrix,renderObject, scale);
